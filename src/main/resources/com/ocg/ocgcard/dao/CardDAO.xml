@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ocg.ocgcard.dao.CardDAO">
+    <resultMap id="cardResultMap" type="com.ocg.ocgcard.dataobject.Card">
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="type_main" property="typeMain"/>
+        <result column="type" property="type"/>
+        <result column="effect" property="effect"/>
+        <result column="meta" property="meta"/>
+    </resultMap>
+
+    <select id="searchBylike" resultMap="cardResultMap">
+        select * from ocg_card where name like concat('%',#{name},'%')
+    </select>
+</mapper>
