@@ -38,6 +38,7 @@ public class CardController {
             result.setData(cardResult);
             result.setMsg("获取失败");
         }else{
+            cardResult.setNowNum(pageint);
             result.setStatus(200);
             result.setSuccess(true);
             result.setData(cardResult);

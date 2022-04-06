@@ -10,4 +10,5 @@ public class CardResult implements Serializable {
     List<Card> cards;
     int pageNum;
     int amount;
+    int nowNum;
 }
