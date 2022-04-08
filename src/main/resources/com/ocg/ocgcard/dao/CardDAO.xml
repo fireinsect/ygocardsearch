@@ -4,14 +4,19 @@
 <mapper namespace="com.ocg.ocgcard.dao.CardDAO">
     <resultMap id="cardResultMap" type="com.ocg.ocgcard.dataobject.Card">
         <id column="id" property="id"/>
+        <result column="card_id" property="cardId"/>
         <result column="name" property="name"/>
-        <result column="type_main" property="typeMain"/>
-        <result column="type" property="type"/>
         <result column="effect" property="effect"/>
-        <result column="meta" property="meta"/>
+        <result column="zz" property="zz"/>
+        <result column="main_type" property="mainType"/>
+        <result column="type" property="type"/>
+        <result column="level" property="level"/>
+        <result column="attribute" property="attribute"/>
+        <result column="atk" property="atk"/>
+        <result column="def" property="def"/>
     </resultMap>
 
     <select id="searchBylike" resultMap="cardResultMap">
-        select * from ocg_card where name like concat('%',#{name},'%')
+        select * from ygo_card where name like concat('%',#{name},'%')
     </select>
 </mapper>

@@ -6,10 +6,15 @@ import java.io.Serializable;
 
 @Data
 public class Card implements Serializable {
-    private int id;
-    private String name;
-    private String typeMain;
-    private String type;
-    private String effect;
-    private String meta;
+    int id;
+    int cardId;
+    String name;
+    String effect;
+    String zz;
+    String mainType;
+    String type;
+    String level;
+    String attribute;
+    String atk;
+    String def;
 }
