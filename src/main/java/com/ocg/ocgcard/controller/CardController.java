@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -30,7 +31,12 @@ public class CardController {
             page="1";
         }
         int pageint=Integer.parseInt(page);
-        List<Card> cards=cardDAO.searchBylike(name);
+        List<String> namechar=new ArrayList<>();
+        for(int i=0;i<name.length();i++){
+            namechar.add(name.charAt(i)+"");
+        }
+        String nameforsearch=String.join("%",namechar);
+        List<Card> cards=cardDAO.searchBylike(nameforsearch);
         CardResult cardResult=cardService.getCardResult(cards,pageint);
         if(cardResult.getCards()==null){
             result.setStatus(500);
