@@ -19,4 +19,15 @@
     <select id="searchBylike" resultMap="cardResultMap">
         select * from ygo_card where name like concat('%',#{name},'%')
     </select>
+
+    <select id="searchByid" resultMap="cardResultMap">
+        select * from ygo_card where card_id =#{cardId}
+    </select>
+
+    <select id="randomSearch" resultMap="cardResultMap">
+        SELECT * FROM ygo_card AS t1 JOIN (SELECT ROUND(RAND()*((SELECT MAX(id)
+        FROM ygo_card)-(SELECT MIN(id) FROM ygo_card))+(SELECT MIN(id)
+        FROM ygo_card)) AS id)AS t2 WHERE t1.id>=t2.id ORDER BY t1.id LIMIT 1;
+    </select>
+
 </mapper>

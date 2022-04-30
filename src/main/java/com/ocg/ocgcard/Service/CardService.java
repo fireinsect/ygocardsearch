@@ -7,4 +7,5 @@ import java.util.List;
 
 public interface CardService {
     CardResult getCardResult(List<Card> cards,int page);
+
 }

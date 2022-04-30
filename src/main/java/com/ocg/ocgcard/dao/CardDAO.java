@@ -10,4 +10,8 @@ import java.util.List;
 @Mapper
 public interface CardDAO {
     List<Card> searchBylike(@Param("name")String name);
+
+    List<Card> searchByid(@Param("cardId")String cardId);
+
+    List<Card> randomSearch();
 }
