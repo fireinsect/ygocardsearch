@@ -1,8 +1,10 @@
 package com.ocg.ocgcard.controller;
 
+import com.github.houbb.opencc4j.util.ZhConverterUtil;
 import com.ocg.ocgcard.Service.CardService;
 import com.ocg.ocgcard.dao.CardDAO;
 import com.ocg.ocgcard.dataobject.Card;
+import com.ocg.ocgcard.dataobject.DailyCard;
 import com.ocg.ocgcard.pojo.CardResult;
 import com.ocg.ocgcard.pojo.Result;
 import com.ocg.ocgcard.util.NameMatchUtil;
@@ -29,7 +31,10 @@ public class CardController {
     @ResponseBody
     public Result<CardResult> getCard(@RequestParam(name = "name") String name, @RequestParam(name = "page", required = false) String page) {
         Result<CardResult> result = new Result<>();
-        if (name.equals("不可以涩涩")||name.equals("不可以色色")){
+        if (!ZhConverterUtil.isSimple(name)){
+            name=ZhConverterUtil.toSimple(name);
+        }
+        if (name.equals("不可以涩涩")||name.equals("不可以色色")||name.equals("可以色色")||name.equals("可以涩涩")){
             name="摸鱼的G";
         }
         if (page == null || page.replaceAll(" ", "") == "") {
@@ -75,6 +80,15 @@ public class CardController {
         getCardResult(result, cards);
         return result;
     }
+    @GetMapping("searchDaily")
+    @ResponseBody
+    public Result<List<DailyCard>> searchDaily() {
+        Result<List<DailyCard>> result = new Result<>();
+        List<DailyCard> cards = cardDAO.searchAllDaily();
+        result.setData(cards);
+        return result;
+    }
+
 
     private void getCardResult(Result<CardResult> result, List<Card> cards) {
         CardResult cardResult = cardService.getCardResult(cards, 1);

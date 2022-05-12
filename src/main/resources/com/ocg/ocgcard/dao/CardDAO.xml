@@ -16,6 +16,12 @@
         <result column="def" property="def"/>
     </resultMap>
 
+    <resultMap id="dailyResultMap" type="com.ocg.ocgcard.dataobject.DailyCard">
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="text" property="text"/>
+    </resultMap>
+
     <select id="searchBylike" resultMap="cardResultMap">
         select * from ygo_card where name like concat('%',#{name},'%')
     </select>
@@ -28,6 +34,10 @@
         SELECT * FROM ygo_card AS t1 JOIN (SELECT ROUND(RAND()*((SELECT MAX(id)
         FROM ygo_card)-(SELECT MIN(id) FROM ygo_card))+(SELECT MIN(id)
         FROM ygo_card)) AS id)AS t2 WHERE t1.id>=t2.id ORDER BY t1.id LIMIT 1;
+    </select>
+
+    <select id="searchAllDaily" resultMap="dailyResultMap">
+        select * from daily_card
     </select>
 
 </mapper>

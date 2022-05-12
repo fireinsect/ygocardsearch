@@ -1,6 +1,7 @@
 package com.ocg.ocgcard.dao;
 
 import com.ocg.ocgcard.dataobject.Card;
+import com.ocg.ocgcard.dataobject.DailyCard;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -14,4 +15,6 @@ public interface CardDAO {
     List<Card> searchByid(@Param("cardId")String cardId);
 
     List<Card> randomSearch();
+
+    List<DailyCard> searchAllDaily();
 }
