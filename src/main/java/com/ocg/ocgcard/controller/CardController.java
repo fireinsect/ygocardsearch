@@ -27,6 +27,24 @@ public class CardController {
     @Autowired
     CardService cardService;
 
+    @GetMapping("getCardByEn")
+    @ResponseBody
+    public Result<CardResult> getCardByEn(@RequestParam(name = "enName") String enName, @RequestParam(name = "page", required = false) String page) {
+        System.out.println(enName);
+        Result<CardResult> result = new Result<>();
+        if (page == null || page.replaceAll(" ", "") == "") {
+            page = "1";
+        }
+        List<String> namechar = new ArrayList<>();
+        for (int i = 0; i < enName.length(); i++) {
+            namechar.add(enName.charAt(i) + "");
+        }
+        String nameforsearch = String.join("%", namechar);
+        int pageint = Integer.parseInt(page);
+        List<Card> cards = cardDAO.searchByEn(nameforsearch);
+        return getCardResult(result, pageint, cards);
+    }
+
     @GetMapping("getCard")
     @ResponseBody
     public Result<CardResult> getCard(@RequestParam(name = "name") String name, @RequestParam(name = "page", required = false) String page) {
@@ -34,9 +52,12 @@ public class CardController {
         if (!ZhConverterUtil.isSimple(name)){
             name=ZhConverterUtil.toSimple(name);
         }
-        if (name.equals("不可以涩涩")||name.equals("不可以色色")||name.equals("可以色色")||name.equals("可以涩涩")){
-            name="摸鱼的G";
-        }
+//        if (name.equals("不可以涩涩")||name.equals("不可以色色")||name.equals("可以色色")||name.equals("可以涩涩")){
+//            name="摸鱼的G";
+//        }else if (name.equals("群可爱")){
+//            name="查卡姬";
+//        }
+        name=NameMatchUtil.nickNameMath(name);
         if (page == null || page.replaceAll(" ", "") == "") {
             page = "1";
         }
@@ -48,6 +69,54 @@ public class CardController {
         }
         String nameforsearch = String.join("%", namechar);
         List<Card> cards = cardDAO.searchBylike(nameforsearch);
+        return getCardResult(result, pageint, cards);
+    }
+
+    @GetMapping("searchCardId")
+    @ResponseBody
+    public Result<CardResult> searchCardId(@RequestParam(name = "cardId") String cardId) {
+        Result<CardResult> result = new Result<>();
+        List<Card> cards = cardDAO.searchByid(cardId);
+        getCardOnePageResult(result, cards);
+        return result;
+    }
+    @GetMapping("randomCard")
+    @ResponseBody
+    public Result<CardResult> randomCard() {
+        Result<CardResult> result = new Result<>();
+        List<Card> cards = cardDAO.randomSearch();
+        getCardOnePageResult(result, cards);
+        return result;
+    }
+    @GetMapping("searchDaily")
+    @ResponseBody
+    public Result<List<DailyCard>> searchDaily() {
+        Result<List<DailyCard>> result = new Result<>();
+        List<DailyCard> cards = cardDAO.searchAllDaily();
+        result.setData(cards);
+        return result;
+    }
+
+
+
+    //结果返回
+
+    private void getCardOnePageResult(Result<CardResult> result, List<Card> cards) {
+        CardResult cardResult = cardService.getCardResult(cards, 1);
+        if (cardResult.getCards() == null) {
+            result.setStatus(500);
+            result.setSuccess(false);
+            result.setData(cardResult);
+            result.setMsg("获取失败");
+        } else {
+            cardResult.setNowNum(1);
+            result.setStatus(200);
+            result.setSuccess(true);
+            result.setData(cardResult);
+            result.setMsg("获取成功");
+        }
+    }
+    private Result<CardResult> getCardResult(Result<CardResult> result, int pageint, List<Card> cards) {
         CardResult cardResult = cardService.getCardResult(cards, pageint);
         if (cardResult.getCards() == null) {
             result.setStatus(500);
@@ -62,47 +131,5 @@ public class CardController {
             result.setMsg("获取成功");
         }
         return result;
-    }
-
-    @GetMapping("searchCardId")
-    @ResponseBody
-    public Result<CardResult> searchCardId(@RequestParam(name = "cardId") String cardId) {
-        Result<CardResult> result = new Result<>();
-        List<Card> cards = cardDAO.searchByid(cardId);
-        getCardResult(result, cards);
-        return result;
-    }
-    @GetMapping("randomCard")
-    @ResponseBody
-    public Result<CardResult> randomCard() {
-        Result<CardResult> result = new Result<>();
-        List<Card> cards = cardDAO.randomSearch();
-        getCardResult(result, cards);
-        return result;
-    }
-    @GetMapping("searchDaily")
-    @ResponseBody
-    public Result<List<DailyCard>> searchDaily() {
-        Result<List<DailyCard>> result = new Result<>();
-        List<DailyCard> cards = cardDAO.searchAllDaily();
-        result.setData(cards);
-        return result;
-    }
-
-
-    private void getCardResult(Result<CardResult> result, List<Card> cards) {
-        CardResult cardResult = cardService.getCardResult(cards, 1);
-        if (cardResult.getCards() == null) {
-            result.setStatus(500);
-            result.setSuccess(false);
-            result.setData(cardResult);
-            result.setMsg("获取失败");
-        } else {
-            cardResult.setNowNum(1);
-            result.setStatus(200);
-            result.setSuccess(true);
-            result.setData(cardResult);
-            result.setMsg("获取成功");
-        }
     }
 }

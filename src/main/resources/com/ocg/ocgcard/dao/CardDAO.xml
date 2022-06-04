@@ -6,6 +6,8 @@
         <id column="id" property="id"/>
         <result column="card_id" property="cardId"/>
         <result column="name" property="name"/>
+        <result column="jp_name" property="jpName"/>
+        <result column="en_name" property="enName"/>
         <result column="effect" property="effect"/>
         <result column="zz" property="zz"/>
         <result column="main_type" property="mainType"/>
@@ -20,6 +22,8 @@
         <id column="id" property="id"/>
         <result column="name" property="name"/>
         <result column="text" property="text"/>
+        <result column="type" property="type"/>
+        <result column="nums" property="nums"/>
     </resultMap>
 
     <select id="searchBylike" resultMap="cardResultMap">
@@ -38,6 +42,10 @@
 
     <select id="searchAllDaily" resultMap="dailyResultMap">
         select * from daily_card
+    </select>
+
+    <select id="searchByEn" resultMap="cardResultMap">
+        select * from ygo_card where en_name like concat('%',#{enName},'%')
     </select>
 
 </mapper>

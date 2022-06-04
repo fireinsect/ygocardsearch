@@ -9,4 +9,6 @@ public class DailyCard implements Serializable {
     int id;
     String name;
     String text;
+    String type;
+    int nums;
 }

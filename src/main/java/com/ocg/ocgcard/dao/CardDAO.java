@@ -17,4 +17,6 @@ public interface CardDAO {
     List<Card> randomSearch();
 
     List<DailyCard> searchAllDaily();
+
+    List<Card> searchByEn(@Param("enName")String enName);
 }
