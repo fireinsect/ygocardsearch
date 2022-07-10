@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ocg.ocgcard.dao.CardNKNDAO">
+    <resultMap id="cardNKNResultMap" type="com.ocg.ocgcard.dataobject.CardNKN">
+        <result column="name" property="name"/>
+        <result column="nick_name" property="nickName"/>
+        <result column="NK_type" property="NKType"/>
+    </resultMap>
+
+    <select id="select0Type" resultMap="cardNKNResultMap">
+        select * from ygo_card_nkn where NK_type=0
+    </select>
+
+    <select id="select1Type" resultMap="cardNKNResultMap">
+        select * from ygo_card_nkn where NK_type=1
+    </select>
+</mapper>

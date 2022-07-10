@@ -4,6 +4,8 @@ import com.github.houbb.opencc4j.util.ZhConverterUtil;
 import com.ocg.ocgcard.Service.CardService;
 import com.ocg.ocgcard.dao.CardDAO;
 import com.ocg.ocgcard.dataobject.Card;
+import com.ocg.ocgcard.dataobject.CardAll;
+import com.ocg.ocgcard.dataobject.CardNKN;
 import com.ocg.ocgcard.dataobject.DailyCard;
 import com.ocg.ocgcard.pojo.CardResult;
 import com.ocg.ocgcard.pojo.Result;
@@ -21,6 +23,8 @@ import java.util.Locale;
 @Controller
 public class CardController {
 
+    static List<CardNKN> nkn1List;
+
     @Autowired
     CardDAO cardDAO;
 
@@ -30,7 +34,6 @@ public class CardController {
     @GetMapping("getCardByEn")
     @ResponseBody
     public Result<CardResult> getCardByEn(@RequestParam(name = "enName") String enName, @RequestParam(name = "page", required = false) String page) {
-        System.out.println(enName);
         Result<CardResult> result = new Result<>();
         if (page == null || page.replaceAll(" ", "") == "") {
             page = "1";
@@ -41,7 +44,7 @@ public class CardController {
         }
         String nameforsearch = String.join("%", namechar);
         int pageint = Integer.parseInt(page);
-        List<Card> cards = cardDAO.searchByEn(nameforsearch);
+        List<CardAll> cards = cardDAO.searchByEn(nameforsearch);
         return getCardResult(result, pageint, cards);
     }
 
@@ -52,23 +55,12 @@ public class CardController {
         if (!ZhConverterUtil.isSimple(name)){
             name=ZhConverterUtil.toSimple(name);
         }
-//        if (name.equals("不可以涩涩")||name.equals("不可以色色")||name.equals("可以色色")||name.equals("可以涩涩")){
-//            name="摸鱼的G";
-//        }else if (name.equals("群可爱")){
-//            name="查卡姬";
-//        }
-        name=NameMatchUtil.nickNameMath(name);
         if (page == null || page.replaceAll(" ", "") == "") {
             page = "1";
         }
+        name=NameMatchUtil.nickNameMath(name);
         int pageint = Integer.parseInt(page);
-        List<String> namechar = new ArrayList<>();
-        name = NameMatchUtil.matchName(name.toUpperCase(Locale.ROOT));
-        for (int i = 0; i < name.length(); i++) {
-            namechar.add(name.charAt(i) + "");
-        }
-        String nameforsearch = String.join("%", namechar);
-        List<Card> cards = cardDAO.searchBylike(nameforsearch);
+        List<CardAll> cards = cardDAO.searchBylike(name);
         return getCardResult(result, pageint, cards);
     }
 
@@ -76,7 +68,7 @@ public class CardController {
     @ResponseBody
     public Result<CardResult> searchCardId(@RequestParam(name = "cardId") String cardId) {
         Result<CardResult> result = new Result<>();
-        List<Card> cards = cardDAO.searchByid(cardId);
+        List<CardAll> cards = cardDAO.searchByid(cardId);
         getCardOnePageResult(result, cards);
         return result;
     }
@@ -84,7 +76,7 @@ public class CardController {
     @ResponseBody
     public Result<CardResult> randomCard() {
         Result<CardResult> result = new Result<>();
-        List<Card> cards = cardDAO.randomSearch();
+        List<CardAll> cards = cardDAO.randomSearch();
         getCardOnePageResult(result, cards);
         return result;
     }
@@ -101,8 +93,8 @@ public class CardController {
 
     //结果返回
 
-    private void getCardOnePageResult(Result<CardResult> result, List<Card> cards) {
-        CardResult cardResult = cardService.getCardResult(cards, 1);
+    private void getCardOnePageResult(Result<CardResult> result, List<CardAll> cards) {
+        CardResult cardResult = cardService.getCardAllResult(cards, 1);
         if (cardResult.getCards() == null) {
             result.setStatus(500);
             result.setSuccess(false);
@@ -116,8 +108,8 @@ public class CardController {
             result.setMsg("获取成功");
         }
     }
-    private Result<CardResult> getCardResult(Result<CardResult> result, int pageint, List<Card> cards) {
-        CardResult cardResult = cardService.getCardResult(cards, pageint);
+    private Result<CardResult> getCardResult(Result<CardResult> result, int pageint, List<CardAll> cards) {
+        CardResult cardResult = cardService.getCardAllResult(cards, pageint);
         if (cardResult.getCards() == null) {
             result.setStatus(500);
             result.setSuccess(false);

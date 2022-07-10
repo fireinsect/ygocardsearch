@@ -9,8 +9,6 @@ public class Card implements Serializable {
     int id;
     int cardId;
     String name;
-    String jpName;
-    String enName;
     String effect;
     String zz;
     String mainType;

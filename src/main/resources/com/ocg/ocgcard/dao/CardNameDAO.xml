@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ocg.ocgcard.dao.CardNameDAO">
+
+    <resultMap id="cardNameResultMap" type="com.ocg.ocgcard.dataobject.CardName">
+        <result column="card_id" property="cardId"/>
+        <result column="name" property="name"/>
+        <result column="jp_name" property="jpName"/>
+        <result column="en_name" property="enName"/>
+    </resultMap>
+
+
+    <select id="searchByEnName" resultMap="cardNameResultMap">
+        select * from ygo_card_name where en_name like concat('%',#{enName},'%')
+    </select>
+
+</mapper>

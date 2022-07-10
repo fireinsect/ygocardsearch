@@ -1,6 +1,7 @@
 package com.ocg.ocgcard.dao;
 
 import com.ocg.ocgcard.dataobject.Card;
+import com.ocg.ocgcard.dataobject.CardAll;
 import com.ocg.ocgcard.dataobject.DailyCard;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -10,13 +11,13 @@ import java.util.List;
 
 @Mapper
 public interface CardDAO {
-    List<Card> searchBylike(@Param("name")String name);
+    List<CardAll> searchBylike(@Param("name")String name);
 
-    List<Card> searchByid(@Param("cardId")String cardId);
+    List<CardAll> searchByid(@Param("cardId")String cardId);
 
-    List<Card> randomSearch();
+    List<CardAll> randomSearch();
 
     List<DailyCard> searchAllDaily();
 
-    List<Card> searchByEn(@Param("enName")String enName);
+    List<CardAll> searchByEn(@Param("enName")String enName);
 }
