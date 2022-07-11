@@ -56,7 +56,7 @@
         where ygo_card_new.name like concat('%',#{name},'%')
     </select>
 
-    <select id="searchByid" resultMap="cardResultMap">
+    <select id="searchByid" resultMap="cardAllResultMap">
         select * from ygo_card
         left join ygo_card_name on ygo_card.name=ygo_card_name.name
         where ygo_card.card_id =#{cardId}
@@ -87,7 +87,7 @@
         select * from daily_card
     </select>
 
-    <select id="searchByEn" resultMap="cardResultMap">
+    <select id="searchByEn" resultMap="cardAllResultMap">
         select * from ygo_card_name
         left join ygo_card on ygo_card.name=ygo_card_name.name
         left join ygo_card_extra on ygo_card_extra.name=ygo_card_name.name
