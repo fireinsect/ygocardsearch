@@ -19,11 +19,15 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Controller
 public class CardController {
 
     static List<CardNKN> nkn1List;
+
+    static final List<String> typeList= Stream.of("怪兽","魔法","陷阱").collect(Collectors.toList());
 
     @Autowired
     CardDAO cardDAO;
@@ -50,7 +54,8 @@ public class CardController {
 
     @GetMapping("getCard")
     @ResponseBody
-    public Result<CardResult> getCard(@RequestParam(name = "name") String name, @RequestParam(name = "page", required = false) String page) {
+    public Result<CardResult> getCard(@RequestParam(name = "name") String name, @RequestParam(name = "type", required = false) String type, @RequestParam(name = "page", required = false) String page) {
+
         Result<CardResult> result = new Result<>();
         if (!ZhConverterUtil.isSimple(name)){
             name=ZhConverterUtil.toSimple(name);
@@ -60,7 +65,13 @@ public class CardController {
         }
         name=NameMatchUtil.nickNameMath(name);
         int pageint = Integer.parseInt(page);
-        List<CardAll> cards = cardDAO.searchBylike(name);
+        List<CardAll> cards;
+        if(type!=null&&typeList.contains(type)){
+            cards = cardDAO.searchBylikeWithType(name,type);
+        }else{
+            cards = cardDAO.searchBylike(name);
+        }
+
         return getCardResult(result, pageint, cards);
     }
 

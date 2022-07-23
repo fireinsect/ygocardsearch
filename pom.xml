@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>com.ocg</groupId>
 	<artifactId>ocgcard</artifactId>
-	<version>0.7.1-SNAPSHOT</version>
+	<version>0.7.3-SNAPSHOT</version>
 	<name>ocgcard</name>
 	<description>ocgcard return json</description>
 	<properties>

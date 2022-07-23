@@ -13,6 +13,8 @@ import java.util.List;
 public interface CardDAO {
     List<CardAll> searchBylike(@Param("name")String name);
 
+    List<CardAll> searchBylikeWithType(@Param("name")String name,@Param("type")String type);
+
     List<CardAll> searchByid(@Param("cardId")String cardId);
 
     List<CardAll> randomSearch();
