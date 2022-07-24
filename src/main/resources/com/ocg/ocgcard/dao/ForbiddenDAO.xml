@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ocg.ocgcard.dao.ForbiddenDAO">
+    <select id="getBans" resultType="java.lang.String">
+        select `name` from ygo_card_forbide where status="禁"
+    </select>
+
+    <select id="getRests" resultType="java.lang.String">
+        select `name` from ygo_card_forbide where status="限"
+    </select>
+
+    <select id="getPres" resultType="java.lang.String">
+        select `name` from ygo_card_forbide where status="准限"
+    </select>
+</mapper>

@@ -9,6 +9,7 @@ import com.ocg.ocgcard.dataobject.CardNKN;
 import com.ocg.ocgcard.dataobject.DailyCard;
 import com.ocg.ocgcard.pojo.CardResult;
 import com.ocg.ocgcard.pojo.Result;
+import com.ocg.ocgcard.util.ForbiddenUtil;
 import com.ocg.ocgcard.util.NameMatchUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -24,8 +25,6 @@ import java.util.stream.Stream;
 
 @Controller
 public class CardController {
-
-    static List<CardNKN> nkn1List;
 
     static final List<String> typeList= Stream.of("怪兽","魔法","陷阱").collect(Collectors.toList());
 
@@ -106,6 +105,7 @@ public class CardController {
 
     private void getCardOnePageResult(Result<CardResult> result, List<CardAll> cards) {
         CardResult cardResult = cardService.getCardAllResult(cards, 1);
+        ForbiddenUtil.forbiddenChange(cardResult.getCards());
         if (cardResult.getCards() == null) {
             result.setStatus(500);
             result.setSuccess(false);
@@ -121,6 +121,7 @@ public class CardController {
     }
     private Result<CardResult> getCardResult(Result<CardResult> result, int pageint, List<CardAll> cards) {
         CardResult cardResult = cardService.getCardAllResult(cards, pageint);
+        ForbiddenUtil.forbiddenChange(cardResult.getCards());
         if (cardResult.getCards() == null) {
             result.setStatus(500);
             result.setSuccess(false);

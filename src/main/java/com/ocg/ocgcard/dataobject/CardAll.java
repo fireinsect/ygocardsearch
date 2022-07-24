@@ -8,4 +8,5 @@ import java.io.Serializable;
 public class CardAll extends Card implements Serializable {
     String jpName;
     String enName;
+    String forbidden="-";
 }
