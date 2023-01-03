@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>com.ocg</groupId>
 	<artifactId>ocgcard</artifactId>
-	<version>0.7.4-SNAPSHOT</version>
+	<version>0.7.7-SNAPSHOT</version>
 	<name>ocgcard</name>
 	<description>ocgcard return json</description>
 	<properties>
@@ -43,6 +43,19 @@
 			<artifactId>mysql-connector-java</artifactId>
 			<scope>runtime</scope>
 		</dependency>
+
+		<dependency>
+			<groupId>com.squareup.okhttp3</groupId>
+			<artifactId>okhttp</artifactId>
+			<version>4.1.0</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.alibaba</groupId>
+			<artifactId>fastjson</artifactId>
+			<version>1.2.50</version>
+		</dependency>
+
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>

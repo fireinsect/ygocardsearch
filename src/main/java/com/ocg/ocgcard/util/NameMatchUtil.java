@@ -23,6 +23,7 @@ public class NameMatchUtil {
     }
 
     public static String nickNameMath(String name){
+        name=name.toUpperCase(Locale.ROOT);
         for(CardNKN cardNKN:type0){
             if(name.equals(cardNKN.getNickName())){
                 return cardNKN.getName();

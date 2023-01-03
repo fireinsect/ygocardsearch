@@ -8,8 +8,11 @@ import com.ocg.ocgcard.dataobject.CardAll;
 import com.ocg.ocgcard.dataobject.CardNKN;
 import com.ocg.ocgcard.dataobject.DailyCard;
 import com.ocg.ocgcard.pojo.CardResult;
+import com.ocg.ocgcard.pojo.GetCardModel;
 import com.ocg.ocgcard.pojo.Result;
+import com.ocg.ocgcard.pojo.SearchGet;
 import com.ocg.ocgcard.util.ForbiddenUtil;
+import com.ocg.ocgcard.util.HttpUtil;
 import com.ocg.ocgcard.util.NameMatchUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -54,25 +57,50 @@ public class CardController {
     @GetMapping("getCard")
     @ResponseBody
     public Result<CardResult> getCard(@RequestParam(name = "name") String name, @RequestParam(name = "type", required = false) String type, @RequestParam(name = "page", required = false) String page) {
-
         Result<CardResult> result = new Result<>();
-        if (!ZhConverterUtil.isSimple(name)){
-            name=ZhConverterUtil.toSimple(name);
-        }
+        List<CardAll> cards;
         if (page == null || page.replaceAll(" ", "") == "") {
             page = "1";
         }
-        name=NameMatchUtil.nickNameMath(name);
         int pageint = Integer.parseInt(page);
-        List<CardAll> cards;
-        if(type!=null&&typeList.contains(type)){
-            cards = cardDAO.searchBylikeWithType(name,type);
+        //判断是否为纯数字
+        if(name.matches("[0-9]+")){
+            cards=cardDAO.searchByid(name);
+            if (cards.size()==0){
+                cards=searchByName(name,type);
+            }
         }else{
-            cards = cardDAO.searchBylike(name);
+            cards=searchByName(name,type);
         }
-
         return getCardResult(result, pageint, cards);
     }
+//    @GetMapping("getCard")
+//    @ResponseBody
+//    public Result<CardResult> getCard(GetCardModel getCardModel) {
+//        Result<CardResult> result = new Result<>();
+//        List<CardAll> cards;
+//        if (getCardModel.getPage() == null || getCardModel.getPage().replaceAll(" ", "") == "") {
+//            getCardModel.setPage("1");
+//        }
+//        int pageint = Integer.parseInt(getCardModel.getPage());
+//        if(getCardModel.getName()!=null){
+//            if(getCardModel.getName().matches("[0-9]+")){
+//                cards=cardDAO.searchByid(getCardModel.getName());
+//                if (cards.size()==0){
+//                    //条件查询
+//                    cards=cardDAO.searchByCondition(getCardModel);
+//                }
+//            }else{
+//                //条件查询
+//                cards=cardDAO.searchByCondition(getCardModel);
+//            }
+//        }else{
+//            //条件查询
+//            cards=cardDAO.searchByCondition(getCardModel);
+//        }
+//
+//        return getCardResult(result, pageint, cards);
+//    }
 
     @GetMapping("searchCardId")
     @ResponseBody
@@ -119,6 +147,32 @@ public class CardController {
             result.setMsg("获取成功");
         }
     }
+
+    private List<CardAll> searchByName(String name,String type){
+        String orgName=name;
+        List<CardAll> cards;
+        if (!ZhConverterUtil.isSimple(name)){
+            name=ZhConverterUtil.toSimple(name);
+        }
+        name=name.replaceAll(" ","");
+        name=NameMatchUtil.nickNameMath(name);
+        if(type!=null&&typeList.contains(type)){
+            cards = cardDAO.searchBylikeWithType(name,type);
+        }else{
+            cards = cardDAO.searchBylike(name);
+            if (cards.size()==0){
+                //如果没找到卡则去白鸽上找
+                List<SearchGet> searchGets= HttpUtil.getSearch(orgName);
+                if (searchGets!=null){
+                    if (searchGets.size()!=0){
+                        cards=cardDAO.searchByid(searchGets.get(0).getId()+"");
+                    }
+                }
+            }
+        }
+        return cards;
+    }
+
     private Result<CardResult> getCardResult(Result<CardResult> result, int pageint, List<CardAll> cards) {
         CardResult cardResult = cardService.getCardAllResult(cards, pageint);
         ForbiddenUtil.forbiddenChange(cardResult.getCards());

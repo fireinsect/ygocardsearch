@@ -3,6 +3,7 @@ package com.ocg.ocgcard.dao;
 import com.ocg.ocgcard.dataobject.Card;
 import com.ocg.ocgcard.dataobject.CardAll;
 import com.ocg.ocgcard.dataobject.DailyCard;
+import com.ocg.ocgcard.pojo.GetCardModel;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -22,4 +23,6 @@ public interface CardDAO {
     List<DailyCard> searchAllDaily();
 
     List<CardAll> searchByEn(@Param("enName")String enName);
+
+    List<CardAll> searchByCondition(GetCardModel getCardModel);
 }

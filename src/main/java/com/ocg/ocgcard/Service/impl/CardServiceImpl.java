@@ -1,11 +1,16 @@
 package com.ocg.ocgcard.Service.impl;
 
+import com.github.houbb.opencc4j.util.ZhConverterUtil;
 import com.ocg.ocgcard.Service.CardService;
 import com.ocg.ocgcard.dao.CardDAO;
 import com.ocg.ocgcard.dao.CardNameDAO;
 import com.ocg.ocgcard.dataobject.Card;
 import com.ocg.ocgcard.dataobject.CardAll;
 import com.ocg.ocgcard.pojo.CardResult;
+import com.ocg.ocgcard.pojo.GetCardModel;
+import com.ocg.ocgcard.pojo.SearchGet;
+import com.ocg.ocgcard.util.HttpUtil;
+import com.ocg.ocgcard.util.NameMatchUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -60,4 +65,30 @@ public class CardServiceImpl implements CardService {
     public List<CardAll> searchByEn(String enName) {
         return null;
     }
+
+//    @Override
+//    public List<CardAll> searchByAll(GetCardModel getCardModel) {
+//        String orgName=getCardModel.getName();
+//        List<CardAll> cards;
+//        if (!ZhConverterUtil.isSimple(name)){
+//            name=ZhConverterUtil.toSimple(name);
+//        }
+//        name=name.replaceAll(" ","");
+//        name= NameMatchUtil.nickNameMath(name);
+//        if(type!=null&&typeList.contains(type)){
+//            cards = cardDAO.searchBylikeWithType(name,type);
+//        }else{
+//            cards = cardDAO.searchBylike(name);
+//            if (cards.size()==0){
+//                //如果没找到卡则去白鸽上找
+//                List<SearchGet> searchGets= HttpUtil.getSearch(orgName);
+//                if (searchGets!=null){
+//                    if (searchGets.size()!=0){
+//                        cards=cardDAO.searchByid(searchGets.get(0).getId()+"");
+//                    }
+//                }
+//            }
+//        }
+//        return cards;
+//    }
 }
