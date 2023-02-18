@@ -74,6 +74,7 @@ public class CardController {
         }
         return getCardResult(result, pageint, cards);
     }
+//多项条件查询
 //    @GetMapping("getCard")
 //    @ResponseBody
 //    public Result<CardResult> getCard(GetCardModel getCardModel) {
@@ -187,7 +188,15 @@ public class CardController {
             result.setSuccess(true);
             result.setData(cardResult);
             result.setMsg("获取成功");
+            resultRecord(result);
         }
         return result;
+    }
+    private boolean resultRecord(Result<CardResult> result){
+        List<CardAll> cardAlls=result.getData().getCards();
+        for (CardAll cardAll:cardAlls){
+            cardService.doCardRecord(cardAll.getCardId());
+        }
+        return true;
     }
 }

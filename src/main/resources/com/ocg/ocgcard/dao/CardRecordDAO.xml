@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ocg.ocgcard.dao.CardRecordDAO">
+    <resultMap id="cardRecordMap" type="com.ocg.ocgcard.dataobject.CardRecord">
+        <id column="card_id" property="cardId"/>
+        <result column="times" property="times"/>
+    </resultMap>
+    <select id="hasCord" resultMap="cardRecordMap">
+        select * from ygo_card_record where card_id=#{cardId}
+    </select>
+    <insert id="addRecord" parameterType="com.ocg.ocgcard.dataobject.CardRecord">
+        insert into ygo_card_record
+        value
+        (#{cardId},1,now(),now())
+    </insert>
+    <update id="timeAdd" parameterType="com.ocg.ocgcard.dataobject.CardRecord">
+        update ygo_card_record set times=${times+1},modify_time=now() where card_id=#{cardId}
+    </update>
+</mapper>

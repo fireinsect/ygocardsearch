@@ -12,5 +12,6 @@ public interface CardService {
 
     CardResult getCardAllResult(List<CardAll> cards, int page);
     List<CardAll> searchByEn(String enName);
+    boolean doCardRecord(int cardId);
 //    List<CardAll> searchByAll(GetCardModel getCardModel);
 }

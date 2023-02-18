@@ -4,8 +4,10 @@ import com.github.houbb.opencc4j.util.ZhConverterUtil;
 import com.ocg.ocgcard.Service.CardService;
 import com.ocg.ocgcard.dao.CardDAO;
 import com.ocg.ocgcard.dao.CardNameDAO;
+import com.ocg.ocgcard.dao.CardRecordDAO;
 import com.ocg.ocgcard.dataobject.Card;
 import com.ocg.ocgcard.dataobject.CardAll;
+import com.ocg.ocgcard.dataobject.CardRecord;
 import com.ocg.ocgcard.pojo.CardResult;
 import com.ocg.ocgcard.pojo.GetCardModel;
 import com.ocg.ocgcard.pojo.SearchGet;
@@ -24,6 +26,9 @@ public class CardServiceImpl implements CardService {
 
     @Autowired
     CardNameDAO cardNameDAO;
+
+    @Autowired
+    CardRecordDAO cardRecordDAO;
 
     private static int pagesize=5;
 
@@ -66,7 +71,19 @@ public class CardServiceImpl implements CardService {
         return null;
     }
 
-//    @Override
+    @Override
+    public boolean doCardRecord(int cardId) {
+        CardRecord cardRecord= cardRecordDAO.hasCord(cardId);
+        if (cardRecord!=null){
+            cardRecordDAO.timeAdd(cardRecord);
+        }else{
+            cardRecord=new CardRecord();
+            cardRecord.setCardId(cardId);
+            cardRecordDAO.addRecord(cardRecord);
+        }
+        return true;
+    }
+    //    @Override
 //    public List<CardAll> searchByAll(GetCardModel getCardModel) {
 //        String orgName=getCardModel.getName();
 //        List<CardAll> cards;
