@@ -54,6 +54,7 @@
         select * from ygo_card_new
         left join ygo_card_name on ygo_card_new.name=ygo_card_name.name
         where ygo_card_new.name like concat('%',#{name},'%')
+        order by length (name)
     </select>
     <select id="searchBylikeWithType" resultMap="cardAllResultMap">
         select * from ygo_card
@@ -69,6 +70,7 @@
         select * from ygo_card_new
         left join ygo_card_name on ygo_card_new.name=ygo_card_name.name
         where ygo_card_new.`main_type`=#{type} and ygo_card_new.name like concat('%',#{name},'%')
+        order by length (name)
     </select>
 
     <select id="searchByid" resultMap="cardAllResultMap">

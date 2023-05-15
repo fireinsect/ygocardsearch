@@ -11,6 +11,7 @@ import com.ocg.ocgcard.pojo.CardResult;
 import com.ocg.ocgcard.pojo.GetCardModel;
 import com.ocg.ocgcard.pojo.Result;
 import com.ocg.ocgcard.pojo.SearchGet;
+import com.ocg.ocgcard.util.CardResultUtil;
 import com.ocg.ocgcard.util.ForbiddenUtil;
 import com.ocg.ocgcard.util.HttpUtil;
 import com.ocg.ocgcard.util.NameMatchUtil;
@@ -51,7 +52,7 @@ public class CardController {
         String nameforsearch = String.join("%", namechar);
         int pageint = Integer.parseInt(page);
         List<CardAll> cards = cardDAO.searchByEn(nameforsearch);
-        return getCardResult(result, pageint, cards);
+        return CardResultUtil.getCardResult(result, pageint, cards);
     }
 
     @GetMapping("getCard")
@@ -72,7 +73,15 @@ public class CardController {
         }else{
             cards=searchByName(name,type);
         }
-        return getCardResult(result, pageint, cards);
+        return CardResultUtil.getCardResult(result, pageint, cards);
+    }
+    @GetMapping("guessCard")
+    @ResponseBody
+    public Result<CardResult> guessCard(@RequestParam(name = "name") String name) {
+        Result<CardResult> result = new Result<>();
+        List<CardAll> cards;
+        cards=searchByName(name,null);
+        return CardResultUtil.getCardOnePageResult(result, cards);
     }
 //多项条件查询
 //    @GetMapping("getCard")
@@ -108,15 +117,14 @@ public class CardController {
     public Result<CardResult> searchCardId(@RequestParam(name = "cardId") String cardId) {
         Result<CardResult> result = new Result<>();
         List<CardAll> cards = cardDAO.searchByid(cardId);
-        getCardOnePageResult(result, cards);
-        return result;
+        return CardResultUtil.getCardOnePageResult(result, cards);
     }
     @GetMapping("randomCard")
     @ResponseBody
     public Result<CardResult> randomCard() {
         Result<CardResult> result = new Result<>();
         List<CardAll> cards = cardDAO.randomSearch();
-        getCardOnePageResult(result, cards);
+        CardResultUtil.getCardOnePageResult(result, cards);
         return result;
     }
     @GetMapping("searchDaily")
@@ -128,26 +136,6 @@ public class CardController {
         return result;
     }
 
-
-
-    //结果返回
-
-    private void getCardOnePageResult(Result<CardResult> result, List<CardAll> cards) {
-        CardResult cardResult = cardService.getCardAllResult(cards, 1);
-        ForbiddenUtil.forbiddenChange(cardResult.getCards());
-        if (cardResult.getCards() == null) {
-            result.setStatus(500);
-            result.setSuccess(false);
-            result.setData(cardResult);
-            result.setMsg("获取失败");
-        } else {
-            cardResult.setNowNum(1);
-            result.setStatus(200);
-            result.setSuccess(true);
-            result.setData(cardResult);
-            result.setMsg("获取成功");
-        }
-    }
 
     private List<CardAll> searchByName(String name,String type){
         String orgName=name;
@@ -174,29 +162,5 @@ public class CardController {
         return cards;
     }
 
-    private Result<CardResult> getCardResult(Result<CardResult> result, int pageint, List<CardAll> cards) {
-        CardResult cardResult = cardService.getCardAllResult(cards, pageint);
-        ForbiddenUtil.forbiddenChange(cardResult.getCards());
-        if (cardResult.getCards() == null) {
-            result.setStatus(500);
-            result.setSuccess(false);
-            result.setData(cardResult);
-            result.setMsg("获取失败");
-        } else {
-            cardResult.setNowNum(pageint);
-            result.setStatus(200);
-            result.setSuccess(true);
-            result.setData(cardResult);
-            result.setMsg("获取成功");
-            resultRecord(result);
-        }
-        return result;
-    }
-    private boolean resultRecord(Result<CardResult> result){
-        List<CardAll> cardAlls=result.getData().getCards();
-        for (CardAll cardAll:cardAlls){
-            cardService.doCardRecord(cardAll.getCardId());
-        }
-        return true;
-    }
+
 }
