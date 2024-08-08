@@ -1,5 +1,6 @@
 package com.ocg.ocgcard.controller;
 
+import com.github.houbb.heaven.util.lang.StringUtil;
 import com.github.houbb.opencc4j.util.ZhConverterUtil;
 import com.ocg.ocgcard.Service.CardService;
 import com.ocg.ocgcard.dao.CardDAO;
@@ -29,7 +30,6 @@ import java.util.stream.Stream;
 
 @Controller
 public class CardController {
-
     static final List<String> typeList= Stream.of("怪兽","魔法","陷阱").collect(Collectors.toList());
 
     @Autowired
@@ -37,6 +37,9 @@ public class CardController {
 
     @Autowired
     CardService cardService;
+
+    @Autowired
+    NameMatchUtil nameMatchUtil;
 
     @GetMapping("getCardByEn")
     @ResponseBody
@@ -60,6 +63,12 @@ public class CardController {
     public Result<CardResult> getCard(@RequestParam(name = "name") String name, @RequestParam(name = "type", required = false) String type, @RequestParam(name = "page", required = false) String page) {
         Result<CardResult> result = new Result<>();
         List<CardAll> cards;
+        if (StringUtil.isEmpty(name)){
+            result.setStatus(500);
+            result.setMsg("不能为空");
+            result.setData(new CardResult());
+            return result;
+        }
         if (page == null || page.replaceAll(" ", "") == "") {
             page = "1";
         }
@@ -80,6 +89,12 @@ public class CardController {
     public Result<CardResult> guessCard(@RequestParam(name = "name") String name) {
         Result<CardResult> result = new Result<>();
         List<CardAll> cards;
+        if (StringUtil.isEmpty(name)){
+            result.setStatus(500);
+            result.setMsg("不能为空");
+            result.setData(new CardResult());
+            return result;
+        }
         cards=searchByName(name,null);
         return CardResultUtil.getCardOnePageResult(result, cards);
     }
@@ -135,29 +150,43 @@ public class CardController {
         result.setData(cards);
         return result;
     }
+    @GetMapping("updateNickName")
+    @ResponseBody
+    public Result updateNickName(){
+        Result result=new Result();
+        nameMatchUtil.init();
+        result.setMsg("更新成功");
+        result.setStatus(200);
+        return result;
+    }
 
 
     private List<CardAll> searchByName(String name,String type){
         String orgName=name;
-        List<CardAll> cards;
+        List<CardAll> cards =new ArrayList<>();
         if (!ZhConverterUtil.isSimple(name)){
             name=ZhConverterUtil.toSimple(name);
         }
         name=name.replaceAll(" ","");
-        name=NameMatchUtil.nickNameMath(name);
-        if(type!=null&&typeList.contains(type)){
-            cards = cardDAO.searchBylikeWithType(name,type);
-        }else{
-            cards = cardDAO.searchBylike(name);
-            if (cards.size()==0){
-                //如果没找到卡则去白鸽上找
-                List<SearchGet> searchGets= HttpUtil.getSearch(orgName);
-                if (searchGets!=null){
-                    if (searchGets.size()!=0){
-                        cards=cardDAO.searchByid(searchGets.get(0).getId()+"");
+        List<String> names=nameMatchUtil.nickNameMath(name);
+        for (String nameTemp:names){
+            List<CardAll> cardsTemp;
+            if(type!=null&&typeList.contains(type)){
+                cardsTemp = cardDAO.searchBylikeWithType(nameTemp,type);
+            }else{
+                cardsTemp = cardDAO.searchBylike(nameTemp);
+                if (cardsTemp.size()==0){
+                    //如果没找到卡则去白鸽上找
+                    System.out.println("去白鸽");
+                    List<SearchGet> searchGets= HttpUtil.getSearch(orgName);
+                    if (searchGets!=null){
+                        if (searchGets.size()!=0){
+                            cardsTemp=cardDAO.searchByid(searchGets.get(0).getId()+"");
+                        }
                     }
                 }
             }
+            cards.addAll(cardsTemp);
         }
         return cards;
     }

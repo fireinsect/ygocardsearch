@@ -9,10 +9,10 @@
     </resultMap>
 
     <select id="select0Type" resultMap="cardNKNResultMap">
-        select * from ygo_card_nkn where NK_type=0
+        select * from ygo_card_nkn where NK_type=0 and status=1
     </select>
 
     <select id="select1Type" resultMap="cardNKNResultMap">
-        select * from ygo_card_nkn where NK_type=1
+        select * from ygo_card_nkn where NK_type=1 and status=1
     </select>
 </mapper>

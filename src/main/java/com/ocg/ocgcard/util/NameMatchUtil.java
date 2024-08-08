@@ -13,27 +13,37 @@ public class NameMatchUtil {
     @Autowired
     CardNKNDAO cardNKNDAO;
 
-    public static List<CardNKN> type0;
+    public static Map<String,List<String>> type0;
     public static List<CardNKN> type1;
 
     @PostConstruct
     public void init(){
-        type0=cardNKNDAO.select0Type();
+        type0=new HashMap<>();
+        List<CardNKN> type0s=cardNKNDAO.select0Type();
+        for (CardNKN t:type0s){
+            if (type0.containsKey(t.getNickName())){
+                type0.get(t.getNickName()).add(t.getName());
+            }else{
+                List<String> type0T=new ArrayList<>();
+                type0T.add(t.getName());
+                type0.put(t.getNickName(),type0T);
+            }
+        }
         type1=cardNKNDAO.select1Type();
     }
 
-    public static String nickNameMath(String name){
+
+    public List<String> nickNameMath(String name){
+        // 大写化名称
         name=name.toUpperCase(Locale.ROOT);
-        for(CardNKN cardNKN:type0){
-            if(name.equals(cardNKN.getNickName())){
-                return cardNKN.getName();
-            }
+        if (type0.containsKey(name)){
+            return type0.get(name);
         }
         name = matchName(name.toUpperCase(Locale.ROOT));
-        return name;
+        return Arrays.asList(name);
     }
 
-    public static String matchName(String name){
+    public String matchName(String name){
         String toName=null;
         for (CardNKN cardNKN:type1){
             if(name.contains(cardNKN.getNickName())){

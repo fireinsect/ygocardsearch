@@ -56,7 +56,8 @@ public class CardServiceImpl implements CardService {
         cardResult.setPageNum((int)Math.ceil(cardsize/pagesize));
         if(page>cardResult.getPageNum()){
             cardResult.setCards(null);
-        }else if(page==cardResult.getPageNum()){
+        }
+        else if(page==cardResult.getPageNum()){
             List<CardAll> re=cards.subList(5*(page-1),cards.size());
             cardResult.setCards(re);
         }else{
